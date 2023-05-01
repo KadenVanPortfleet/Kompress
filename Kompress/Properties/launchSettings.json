@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Kompress": {
+      "commandName": "Project",
+      "commandLineArgs": "decompress data.txt"
+    }
+  }
+}
