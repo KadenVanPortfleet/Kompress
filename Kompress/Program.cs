@@ -72,6 +72,11 @@ namespace Kompress
                 //Console.WriteLine(finalBits);
             }
             Console.WriteLine("FINAL BITS: \n" + finalBits);
+            int extra = finalBits.Length % 8;
+            for (int i = 0; i < extra; i++)
+            {
+                finalBits += 0;
+            }
             int numberofBytes = finalBits.Length / 8;
             Byte[] bytes = new Byte[numberofBytes];
             for (int i = 0; i < numberofBytes; i++)
@@ -84,10 +89,10 @@ namespace Kompress
                 ENCODED = ENCODED + (Convert.ToChar(Convert.ToInt32(bytes[i])));
             }
 
-            
+            Console.WriteLine("DEBUG: " + ENCODED);
             
 
-            File.WriteAllText("test.txt", ENCODED);
+            File.WriteAllText("test.txt", Convert.ToString(ENCODED));
 
 
             File.WriteAllText("key.txt", null);

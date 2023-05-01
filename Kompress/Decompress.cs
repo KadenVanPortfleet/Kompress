@@ -62,7 +62,7 @@ namespace Kompress
             string bits = null;
             string strTemp = null;
             string temp = null;
-            temp = input + 0;
+            temp = input;
             Console.WriteLine("Debug2: " + input);
             for (int i = 0; i < temp.Length; i++)
             {
