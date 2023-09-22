@@ -1,32 +1,35 @@
 ﻿using System.Collections;
+using System.Runtime.CompilerServices;
+using System.Text.Unicode;
+
+
 //Another test change
 namespace Kompress
 {
-
-
     class Kompress
     {
-
-
-
+        public static System.Text.Encoding Default { get; set; }
         static void Main()
         {
-
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Default = System.Text.Encoding.UTF8;
             Kompress komp = new Kompress();
             string[] source = Environment.GetCommandLineArgs();
 
-            string data = File.ReadAllText(source[2]);
-            data = data;
+            //string data = File.ReadAllText(source[2]);
 
 
             if (source[1] == "decompress")
             {
                 Decompress decomp = new Decompress();
-                decomp.Decompressor();
+                decomp.Decompressor(source);
+                System.Environment.Exit(0);
             }
             else if (source[1] == "compress")
             {
-
+                string data = File.ReadAllText(source[2], System.Text.Encoding.UTF8);
+                byte[] dataBytes;
+                dataBytes = System.Text.Encoding.UTF8.GetBytes(data);
 
                 int[] arrFreq = new int[256];
 
@@ -44,12 +47,14 @@ namespace Kompress
                 //Console.WriteLine("Root Frequency: " + root.Right.Right.Left.Left.Val);
 
                 //Console.WriteLine("" + root.Freq);
-                //Console.WriteLine("" + root.Left.Right.Val);
+                
 
                 for (int i = 0; i < 255; i++)
                 {
+                    //Console.WriteLine($"Asci: {i} Char: {(Char)i}");
                     if (data.Contains((char)i) == true)
                     {
+                        //Console.WriteLine($"Asci: {i} Char: {(char)i}");
                         heap.getCode((char)i, root);
                         //Console.WriteLine(heap.foundNode.Code);
                         Console.WriteLine("Code for " + (char)i + ": " + heap.genCode(heap.foundNode));
@@ -69,15 +74,23 @@ namespace Kompress
             string finalBits = null;
             for (int i = 0; i < data.Length; i++)
             {
-                finalBits = finalBits + hashCodes[data[i]].ToString();
-                //Console.WriteLine(finalBits);
+                finalBits = finalBits + hashCodes[(data[i])].ToString();
+                //Console.WriteLine(i);
             }
-            Console.WriteLine("FINAL BITS: \n" + finalBits);
-            int extra = finalBits.Length % 8;
+            Console.WriteLine("FINAL BITS before refactor: \n" + finalBits);
+
+            int extra = 8 - (finalBits.Length % 8);
+            if (finalBits.Length == 8)
+            {
+                extra = 0;   
+            }
+            
+            Console.WriteLine("Extra bits needed: " + extra);
             for (int i = 0; i < extra; i++)
             {
-                finalBits += 0;
+                finalBits = finalBits + "0";
             }
+            Console.WriteLine("FINAL BITS after refactor: \n" + finalBits);
             int numberofBytes = finalBits.Length / 8;
             Byte[] bytes = new Byte[numberofBytes];
             for (int i = 0; i < numberofBytes; i++)
@@ -93,7 +106,7 @@ namespace Kompress
             Console.WriteLine("DEBUG: " + ENCODED);
             
 
-            File.WriteAllText("test.txt", Convert.ToString(ENCODED));
+            File.WriteAllText("encrypted data.txt", Convert.ToString(ENCODED));
 
 
             File.WriteAllText("key.txt", null);
@@ -101,11 +114,11 @@ namespace Kompress
             {
                 if (arrFreq[i] != 0)
                 {
-                    File.AppendAllText("key.txt",i + "." + arrFreq[i].ToString() + (char)45);
+                    File.AppendAllText("key.txt", i + "." + arrFreq[i].ToString() + (char)45);
 
                 }
-
             }
+            File.AppendAllText("key.txt", "|" + extra);
 
 
         }

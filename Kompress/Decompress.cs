@@ -10,16 +10,16 @@ namespace Kompress
     {
         Kompress.Node root = new Kompress.Node();
         Kompress.Heap heap = new Kompress.Heap();
-        public void Decompressor()
+        public void Decompressor(string[] sourceD)
         {
             
             int[] arrFreq = new int[256];
 
-            string key = File.ReadAllLines("key.txt")[0];
-            string input = File.ReadAllText("test.txt");
+            string key = File.ReadAllLines(sourceD[3])[0];
+            string input = File.ReadAllText(sourceD[2]);
 
             string[] arrInput = key.Split((char)45);
-            Console.WriteLine(arrInput[1]);
+            //Console.WriteLine(arrInput[16]);
 
             for (int i = 0; i < arrInput.Length - 1; i++)
             {
@@ -46,7 +46,15 @@ namespace Kompress
             Console.WriteLine("Root Frequency: " + root.Freq);
             string bits;
             bits = parseEncryption(input);
-            Console.WriteLine("DEBUG: " + bits);
+            Console.WriteLine("DEBUG before shaving: " + bits);
+
+            string[] shaveArr = arrInput[arrInput.Length - 1].Split("|");
+            Console.WriteLine(shaveArr[1]);
+            int shaveAmt = Int32.Parse(shaveArr[1]);
+            Console.WriteLine(shaveAmt);
+            bits = bits.Remove(bits.Length - shaveAmt);
+
+            Console.WriteLine("DEBUG after shaving: " + bits);
             Console.WriteLine(bitInterpreter(bits));
             //Console.WriteLine(root.Right.Right.Right.Right.Val);
 
@@ -63,14 +71,14 @@ namespace Kompress
             string strTemp = null;
             string temp = null;
             temp = input;
-            Console.WriteLine("Debug2: " + input);
+            //Console.WriteLine("Debug2: " + input);
             for (int i = 0; i < temp.Length; i++)
             {
-                Console.WriteLine("Debug3: " + temp[i]);
+                //Console.WriteLine("Debug3: " + temp[i]);
                 strTemp = Convert.ToString(Convert.ToInt32(temp[i]), 2);
                 strTemp = strTemp.PadLeft(8, (char)(byte)48);
 
-                Console.WriteLine("DEBUG4: " + strTemp);
+                //Console.WriteLine("DEBUG4: " + strTemp);
 
                 bits = bits + strTemp;
                 
